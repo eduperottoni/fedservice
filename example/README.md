@@ -11,6 +11,28 @@ UMU has one subordinate, an OP.
 LU has two subordinates; one RP that does automatic registration and another
 that does explicit registration.
 
+            +-----------------+         +-----------------+
+            |     SEID        |         |     SWAMID      |
+            | Trust Anchor    |         | Trust Anchor    |
+            +--------+--------+         +--------+--------+
+                     |                           |
+                     |                           |
+                     |                           |
+         +-----------+-----------+     +---------+
+         |                       |     | 
++--------+-------+       +-------+-----+---+ 
+|     UMU        |       |       LU        |
+| Organization   |       |   Organization  | 
++-------+--------+       +---+----------+--+ 
+        |                    |          |_____________ 
+        |                    |                        |
+  +-----+-------+       +----+--------+         +-----+----------+
+  |   OP        |       |   RP        |         |   RP           |
+  | Subordinate |       | Subordinate |         | Subordinate    |
+  |             |       |             |         |                |
+  | (UMU OP)    |       | (Auto Reg)  |         | (Explicit Reg) |
+  +-------------+       +-------------+         +----------------+
+
 # Setting up the test federations
 
 There is a set of information that must be the same in different places in
