@@ -12,26 +12,26 @@ LU has two subordinates; one RP that does automatic registration and another
 that does explicit registration.
 
             +-----------------+         +-----------------+
-            |     SEID        |         |     SWAMID      |
+            |     SEID        |:7001    |     SWAMID      |:7002
             | Trust Anchor    |         | Trust Anchor    |
             +--------+--------+         +--------+--------+
                      |                           |
-                     |                           |
-                     |                           |
-         +-----------+-----------+     +---------+
-         |                       |     | 
-+--------+-------+       +-------+-----+---+ 
-|     UMU        |       |       LU        |
-| Organization   |       |   Organization  | 
-+-------+--------+       +---+----------+--+ 
-        |                    |          |_____________ 
-        |                    |                        |
-  +-----+-------+       +----+--------+         +-----+----------+
-  |   OP        |       |   RP        |         |   RP           |
-  | Subordinate |       | Subordinate |         | Subordinate    |
-  |             |       |             |         |                |
-  | (UMU OP)    |       | (Auto Reg)  |         | (Explicit Reg) |
-  +-------------+       +-------------+         +----------------+
+     +---------------|---------------------------+
+     |               |                           |
+     |        +------+--------------------+      |
+     |        |                           |      |    
++----+--------+--+                    +---+------+------+
+|     UMU        |:6002               |       LU        |:6003
+| Organization   |                    |   Organization  |
++-------+--------+                    +---+----------+--+
+        |                                 |          |_____________ 
+        |                                 |                        |
+  +-----+-------+                    +----+--------+         +-----+----------+
+  |   OP        |                    |   RP        |         |   RP           |
+  | Subordinate |:5000               | Subordinate |:4001    | Subordinate    |:4002
+  |             |                    |             |         |                |
+  | (UMU OP)    |                    | (Auto Reg)  |         | (Explicit Reg) |
+  +-------------+                    +-------------+         +----------------+
 
 # Setting up the test federations
 
@@ -54,11 +54,10 @@ stand in the fedservice/example directory.
 
 A simple script for starting/stopping entities:
 
-    ./exec.py start rpa rpa op lu umu seid swamid
+    ./exec.py start rpa rpe op lu umu seid swamid
 
 This will start all entities in the example federations.
-If you want to look at the layout of the federation look at the 
-_Federation Example.jpg_ file.
+
 
 The different entities are:
 
@@ -105,7 +104,7 @@ and https://127.0.0.1:5000 (OP).
 
 To do this you use `get_chains.py`
 
-    ../script/get_chains.py -k -t trust_anchors.json https://127.0.0.1:5000
+    ../script/get_trust_chains.py -k -t trust_anchors.json https://127.0.0.1:5000
 
 * -k : Don't try to verify the certificate used for TLS
 * -t : A JSON file with a list of trust anchors.
@@ -118,7 +117,7 @@ intermediates and finally the leaf in that order.
 If you do:
 
     ./exec.py start OP UMU LU SWAMID SEID
-    ../script/get_chains.py -k -t trust_anchors.json https://127.0.0.1:5000
+    ../script/get_trust_chains.py -k -t trust_anchors.json https://127.0.0.1:5000
 
 You will see 2 lists. Each with 3 entities in it.
 
@@ -139,7 +138,8 @@ positional arguments:
 
 and an example:
 
-../script/get_entity_statement.py -k -c -t trust_anchors.json -s https://127.0.0.1:6002 https://127.0.0.1:5000
+../script/get_subordinate_statement.py -k -c -t trust_anchors_local.json -s https://127.0.0.1:6002 https://127.0.0.1:5000
+../script/list_subordinates.py -k -t trust_anchors.json http://127.0.0.1:6002
 
 This will first display the Entity Configuration for https://127.0.0.1:5000
 and then the Entity Statement for https://127.0.0.1:5000 as produced by
